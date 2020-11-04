@@ -1,55 +1,19 @@
 package pruebas;
 
 import javax.swing.JFrame;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
 
-public class Frame extends JFrame implements MouseListener{
-
-    Grafico ventana = new Grafico();
+public class Frame extends JFrame{
 
     public Frame(){
-        ventana.cargarImagenes();
-        this.setSize(500,500);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.add(ventana);
-        this.setVisible(true);
-        addMouseListener(this);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setResizable(false);
+        Component component = new Grafico();
+        add(component, BorderLayout.CENTER);
+
+        setLocation(200, 50);
+        setSize(700,560);
+        setVisible(true);
     }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        ventana.clickeado = true;
-        int numX = e.getX();
-        int numY = e.getY();
-        double x = (numX/Math.pow(10, 2));
-        double y = (numY/Math.pow(10, 2));
-        ventana.x = (int)x;
-        ventana.y = (int)y;
-        this.repaint();
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-    
 }
