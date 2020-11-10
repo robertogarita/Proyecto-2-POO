@@ -5,7 +5,7 @@ import pruebas.Grafico;
 
 public class Zombielvl1 extends Piece {
     
-    public Zombielvl1(int x, int y, String file_path, Grafico board) {
-        super(x, y, file_path, board);
+    public Zombielvl1(int x, int y, String file_path, Grafico board, int Salud) {
+        super(x, y, file_path, board, Salud);
     }
 }
