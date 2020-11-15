@@ -2,6 +2,8 @@ package personajes.principales;
 
 import java.util.Random;
 
+import javax.swing.JProgressBar;
+
 import pruebas.Grafico;
 
 /* 
@@ -15,15 +17,18 @@ public class Piece {
     public String file_path;
     public Grafico board;
     public int Salud;
+    public static int Danho = 25;
     public static int x_User;
     public static int y_User;
+    public JProgressBar SaludBarra;
 
-    public Piece(int x, int y, String file_path, Grafico board, int Salud){
+    public Piece(int x, int y, String file_path, Grafico board, int Salud, JProgressBar SaludBarra){
         this.x = x;
         this.y = y;
         this.file_path = file_path;
         this.board = board;
         this.Salud = Salud;
+        this.SaludBarra = SaludBarra;
     }
 
     //Verifica si el personaje se puede mover a la casilla seleccionada
@@ -104,11 +109,13 @@ public class Piece {
         return true;
     }
 
-    public void dropObject(){}
+    public void AumentarDanho(){
+        Danho += 25;
+    }
 
     //Baja la salud del enemigo cuando lo atacan
     public void recibirDano(){
-        Salud -= 25;
+        Salud -= Danho;
     }
 
     //Permite a los usuarios atacar en las casillas marcadas
