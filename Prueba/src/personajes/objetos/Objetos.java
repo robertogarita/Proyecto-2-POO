@@ -2,7 +2,7 @@ package personajes.objetos;
 
 import pruebas.Grafico;
 
-public class Objetos {
+public class Objetos{
     public int x;
     public int y;
     public String file_path;

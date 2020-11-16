@@ -26,7 +26,7 @@ public class Grafico extends JComponent implements ActionListener{
     private static final long serialVersionUID = 1L;
     
     private final int Square_Width = 65, rows = 8, cols = 8;
-    private static int turnCounter = 0, turnSelector = 3, level = 1;
+    private static int turnCounter = 0, turnSelector = 3, level = 1, dropSelector;
     
     public ArrayList<Piece> enemies, Users;
     public ArrayList<Piedra> Obstacule;
@@ -201,8 +201,14 @@ public class Grafico extends JComponent implements ActionListener{
                     Square_Width*Active_Piece.y, active_Square.getWidth(null), active_Square.getHeight(null))));
 
                 if(Attack){
-                    //Llama constructos clase Casilla
-                    Casillas valor = new Casillas(Active_Piece.x, Active_Piece.y);
+                    //Llama constructor clase Casilla
+                    Casillas valor = new Casillas(Active_Piece.x, Active_Piece.y, 3);
+                    for(int i=0 ; i<Inventory.size() ; i++){
+                        if(Inventory.get(i).file_path.equals("/recursos/estaticoSprites/Objeto2.png")){
+                            valor = new Casillas(Active_Piece.x, Active_Piece.y, 4);
+                            break;
+                        }
+                    }
                     AttackValues = valor.Valores;
                     Attack = false;
 
@@ -237,8 +243,8 @@ public class Grafico extends JComponent implements ActionListener{
         }
         if(!ObjectList.isEmpty()){
             //Carga las imagenes de los obj. dropeados
-            Image Objeto = loadImage("/recursos/estaticoSprites/Objeto1.png");
             for(int i=0 ; i<ObjectList.size() ; i++){
+                Image Objeto = loadImage(ObjectList.get(i).file_path);
                 Static_Shapes.add(new DrawingImage(Objeto, new Rectangle2D.Double(Square_Width*ObjectList.get(i).x,
                 Square_Width*ObjectList.get(i).y, Objeto.getWidth(null), Objeto.getHeight(null))));
             }
@@ -253,12 +259,12 @@ public class Grafico extends JComponent implements ActionListener{
         }
         if(!Inventory.isEmpty()){
             int NumTemp = 0, rest = 0;
-            Image objObtenido = loadImage("/recursos/estaticoSprites/Objeto1.png");
             for(int i=0 ; i<Inventory.size() ; i++){
                 if(NumTemp != 0 && NumTemp%5 == 0){
                     NumTemp ++;
                     rest = i-1;
                 }
+                Image objObtenido = loadImage(Inventory.get(i).file_path);
                 Static_Shapes.add(new DrawingImage(objObtenido, new Rectangle2D.Double(Inventory.get(i-rest).x,
                 Inventory.get(NumTemp).y, 29, 37)));
             }
@@ -277,7 +283,6 @@ public class Grafico extends JComponent implements ActionListener{
             Active_Piece = enemies.get(i);
             if(Active_Piece.closePiece(Active_Piece.x , Active_Piece.y)){
                 Active_Piece.MoveEnemy();
-
             }else{
                 Users.remove(getPiece(Piece.x_User, Piece.y_User));
                 DeadUser.add(new Objetos(Piece.x_User, Piece.y_User, "/recursos/estaticoSprites/Lapida.png"));
@@ -339,6 +344,8 @@ public class Grafico extends JComponent implements ActionListener{
             Users.clear();
             enemies.clear();
             Obstacule.clear();
+            ObjectList.clear();
+            DeadUser.clear();
             turnSelector = 3;
             level++;
             initGrid();
@@ -388,7 +395,8 @@ public class Grafico extends JComponent implements ActionListener{
                         if(objetoDropeado != null){
 
                             Active_Piece.IncreaseDamage();
-                            Inventory.add(new Objetos(530+(Inventory.size()*29), 265+(((int)(Inventory.size()/4))*37), "/recursos/estaticoSprites/Objeto1.png"));
+                            Inventory.add(new Objetos(530+(Inventory.size()*29), 265+(((int)(Inventory.size()/4))*37),
+                                objetoDropeado.file_path));
                             ObjectList.remove(objetoDropeado);
                         }
                         Active_Piece = null;
@@ -404,8 +412,13 @@ public class Grafico extends JComponent implements ActionListener{
                             if(clicked_piece.Salud <= 0){
                                 enemies.remove(clicked_piece);
                                 turnSelector--;
-                                ObjectList.add(new Objetos(Clicked_Column, Clicked_Row, 
+                                if(clicked_piece.getClass().getSimpleName().equals("Zombielvl1")){
+                                    ObjectList.add(new Objetos(Clicked_Column, Clicked_Row, 
                                     "/recursos/estaticoSprites/Objeto1.png"));
+                                }else{
+                                    ObjectList.add(new Objetos(Clicked_Column, Clicked_Row, 
+                                    "/recursos/estaticoSprites/Objeto2.png"));
+                                }
                             }
                             turnCounter ++;
                         }
@@ -431,7 +444,7 @@ public class Grafico extends JComponent implements ActionListener{
     }
 
     private void drawBackground(Graphics2D g2){
-        g2.setColor(Color.CYAN);
+        g2.setColor(Color.DARK_GRAY);
         g2.fillRect(0, 0, getWidth(), getHeight());
     }
     private void drawShapes(Graphics2D g2){

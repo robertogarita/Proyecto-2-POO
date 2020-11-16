@@ -13,7 +13,7 @@ public class Casillas extends Grafico{
 
     public ArrayList<Integer> Valores = new ArrayList<Integer>();
 
-    public Casillas(int x, int y){
+    public Casillas(int x, int y, int ShootRange){
         /*
         Ejemplo de funcionamiento:
         [ ][ ][X][ ][ ]
@@ -27,7 +27,7 @@ public class Casillas extends Grafico{
 
         Va a regresar las posiciones de las X, en un arreglo
         */
-        for(int i=1 ; i<3 ; i++){;
+        for(int i=1 ; i<ShootRange; i++){;
             if(x+i < 8){
                 Valores.add(x+i);
                 Valores.add(y);

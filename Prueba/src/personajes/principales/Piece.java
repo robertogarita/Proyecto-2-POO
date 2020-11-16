@@ -110,7 +110,7 @@ public class Piece {
     }
 
     public void IncreaseDamage(){
-        Danho += 25;
+        Danho += 5;
     }
 
     //Baja la salud del enemigo cuando lo atacan
