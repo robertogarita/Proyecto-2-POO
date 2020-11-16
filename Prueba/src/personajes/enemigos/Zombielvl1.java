@@ -1,7 +1,6 @@
 package personajes.enemigos;
 
 import javax.swing.JProgressBar;
-
 import personajes.principales.Piece;
 import pruebas.Grafico;
 

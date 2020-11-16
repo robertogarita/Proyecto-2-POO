@@ -41,30 +41,30 @@ public class Piece {
     }
 
     //Busca si el enemigo tiene algun usuario cerca, si lo tiene, permite ubicarlo para atacarlo
-    public boolean piezaAdyacentes(int Dx, int Dy){
-        Piece pieza1 = board.getPiece(Dx+1, Dy);
-        Piece pieza2 = board.getPiece(Dx-1, Dy);
-        Piece pieza3 = board.getPiece(Dx, Dy+1);
-        Piece pieza4 = board.getPiece(Dx, Dy-1);
-        if(!(board.Users.contains(pieza1) || board.Users.contains(pieza2) ||
-            board.Users.contains(pieza3) || board.Users.contains(pieza4))){
+    public boolean closePiece(int Dx, int Dy){
+        Piece piece1 = board.getPiece(Dx+1, Dy);
+        Piece piece2 = board.getPiece(Dx-1, Dy);
+        Piece piece3 = board.getPiece(Dx, Dy+1);
+        Piece piece4 = board.getPiece(Dx, Dy-1);
+        if(!(board.Users.contains(piece1) || board.Users.contains(piece2) ||
+            board.Users.contains(piece3) || board.Users.contains(piece4))){
             return true;
         }else{
-            if(pieza1 != null){
-                x_User = pieza1.x;
-                y_User = pieza1.y;
+            if(piece1 != null){
+                x_User = piece1.x;
+                y_User = piece1.y;
             }
-            else if(pieza2 != null){
-                x_User = pieza2.x;
-                y_User = pieza2.y;
+            else if(piece2 != null){
+                x_User = piece2.x;
+                y_User = piece2.y;
             }
-            else if(pieza3 != null){
-                x_User = pieza3.x;
-                y_User = pieza3.y;
+            else if(piece3 != null){
+                x_User = piece3.x;
+                y_User = piece3.y;
             }
-            else if(pieza4 != null){
-                x_User = pieza4.x;
-                y_User = pieza4.y;
+            else if(piece4 != null){
+                x_User = piece4.x;
+                y_User = piece4.y;
             }
             return false;
         }
@@ -72,8 +72,8 @@ public class Piece {
 
     //Mueve el enemigo una casilla
     public void MoveEnemy(){
-        Random aleatorio = new Random();
-        int intAle = aleatorio.nextInt(4);
+        Random RanNum = new Random();
+        int intAle = RanNum.nextInt(4);
         switch(intAle){
             case 0:
                 x++;
@@ -109,17 +109,23 @@ public class Piece {
         return true;
     }
 
-    public void AumentarDanho(){
+    public void IncreaseDamage(){
         Danho += 25;
     }
 
     //Baja la salud del enemigo cuando lo atacan
-    public void recibirDano(){
-        Salud -= Danho;
+    public void ReceiveDamage(Piece Enemy){
+        if(Enemy.getClass().getSimpleName().equals("Zombielvl1")){
+            Salud -= Danho;
+        }else if(Enemy.getClass().getSimpleName().equals("Zombielvl2")){
+            Salud -= (Danho-10);
+        }else{
+            Salud -= (Danho-24);
+        }
     }
 
     //Permite a los usuarios atacar en las casillas marcadas
-    public boolean Atacar(int xPosicion, int yPosicion, int xLlegada, int yLlegada){
+    public boolean UserAttack(int xPosicion, int yPosicion, int xLlegada, int yLlegada){
         if((xPosicion-2 <= xLlegada && xLlegada <= xPosicion+2) && 
             (yPosicion-2 <= yLlegada && yLlegada <= yPosicion+2)){
                 return true;

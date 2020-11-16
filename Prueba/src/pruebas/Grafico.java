@@ -1,10 +1,9 @@
 package pruebas;
 
-import personajes.principales.Alan;
+import personajes.principales.Character;
 import personajes.principales.Piece;
 import ubicacion.Casillas;
-import personajes.enemigos.Piedra;
-import personajes.enemigos.Zombielvl1;
+import personajes.enemigos.*;
 import personajes.objetos.Objetos;
 
 import java.awt.*;
@@ -27,22 +26,21 @@ public class Grafico extends JComponent implements ActionListener{
     private static final long serialVersionUID = 1L;
     
     private final int Square_Width = 65, rows = 8, cols = 8;
-    public static int turnCounter = 0, Selector_Azar = 3, Nivel = 1;
+    private static int turnCounter = 0, turnSelector = 3, level = 1;
     
-    public ArrayList<Piece> enemigos, Users;
-    public ArrayList<Piedra> Obstaculo;
-    public ArrayList<Objetos> ObjetosLista, Muertes, Inventario;
+    public ArrayList<Piece> enemies, Users;
+    public ArrayList<Piedra> Obstacule;
+    public ArrayList<Objetos> ObjectList, DeadUser, Inventory;
     public ArrayList<DrawingShape> Static_Shapes, User_Graphics;
-    public ArrayList<Integer> VD;
+    public ArrayList<Integer> AttackValues;
     
-    public Piece Active_Piece, casillaDisparo;
-    public Piedra piedraMadre;
+    public Piece Active_Piece;
 
-    private JButton botonNivel, botonAtacar;
-    private JLabel mensaje, mensaje2, mensaje3;
-    private JProgressBar barra1=new JProgressBar(), barra2=new JProgressBar(), barra3=new JProgressBar();
+    private JButton LevelButton, AttackButton;
+    private JLabel Message1, Message2, Message3;
+    private JProgressBar HPEnemy_1=new JProgressBar(), HPEnemy_2=new JProgressBar(), HPEnemy_3=new JProgressBar();
 
-    private boolean Usuario_Seleccionado = false, Ataque = false, Move = true;
+    private boolean Selected_User = false, Attack = false, Move = true;
     private Integer BoardGrid[][];
     private String board_file_path = "/recursos/estaticoSprites/Cuadro.png";
     private String active_square_file_path = "/recursos/estaticoSprites/active_square.png";
@@ -53,7 +51,7 @@ public class Grafico extends JComponent implements ActionListener{
         y coloca las barras de salud(Hay que ponerlas en funcion drawBoard)
     */
     public void initGrid(){
-        if(Nivel == 1){
+        if(level == 1){
             for(int i=0 ; i<rows ; i++){
                 for(int f=0 ; f<cols ; f++){
                     BoardGrid[i][f] = 0;
@@ -61,48 +59,48 @@ public class Grafico extends JComponent implements ActionListener{
             }
         }
 
-        Users.add(new Alan(6, 0, "/recursos/userSprites/Men.png", this, 100, null));
-        Users.add(new Alan(7, 0, "/recursos/userSprites/Bigote.png", this, 100, null));
-        Users.add(new Alan(7, 1, "/recursos/userSprites/Johnny.png", this, 100, null));
+        Users.add(new Character(6, 0, "/recursos/userSprites/Men.png", this, 100, null));
+        Users.add(new Character(7, 0, "/recursos/userSprites/Bigote.png", this, 100, null));
+        Users.add(new Character(7, 1, "/recursos/userSprites/Johnny.png", this, 100, null));
 
-        Obstaculo.add(new Piedra(3, 5, "/recursos/estaticoSprites/piedra.png", this));
+        Obstacule.add(new Piedra(3, 5, "/recursos/estaticoSprites/piedra.png", this));
 
-        if(Nivel == 1){
-            enemigos.add(new Zombielvl1(2, 6, "/recursos/enemigosSprites/ZombieLVL1.png", this, 100, barra1));
-            enemigos.add(new Zombielvl1(5, 5, "/recursos/enemigosSprites/ZombieLVL1.png", this, 100, barra2));
-            enemigos.add(new Zombielvl1(3, 3, "/recursos/enemigosSprites/ZombieLVL1.png", this, 100, barra3));
-        }else if(Nivel == 2){
-            enemigos.add(new Zombielvl1(2, 6, "/recursos/enemigosSprites/ZombieLVL2.png", this, 100, barra1));
-            enemigos.add(new Zombielvl1(5, 5, "/recursos/enemigosSprites/ZombieLVL1.png", this, 100, barra2));
-            enemigos.add(new Zombielvl1(3, 3, "/recursos/enemigosSprites/ZombieLVL2.png", this, 100, barra3));
-        }else if(Nivel == 3){
-            enemigos.add(new Zombielvl1(2, 6, "/recursos/enemigosSprites/ZombieLVL2.png", this, 100, barra1));
-            enemigos.add(new Zombielvl1(5, 5, "/recursos/enemigosSprites/ZombieLVL2.png", this, 100, barra2));
-            enemigos.add(new Zombielvl1(3, 3, "/recursos/enemigosSprites/ZombieLVL3.png", this, 100, barra3));
-        }else if(Nivel == 4){
+        if(level == 1){
+            enemies.add(new Zombielvl1(2, 6, "/recursos/enemigosSprites/ZombieLVL1.png", this, 100, HPEnemy_1));
+            enemies.add(new Zombielvl1(5, 5, "/recursos/enemigosSprites/ZombieLVL1.png", this, 100, HPEnemy_2));
+            enemies.add(new Zombielvl1(3, 3, "/recursos/enemigosSprites/ZombieLVL1.png", this, 100, HPEnemy_3));
+        }else if(level == 2){
+            enemies.add(new Zombielvl2(2, 6, "/recursos/enemigosSprites/ZombieLVL2.png", this, 100, HPEnemy_1));
+            enemies.add(new Zombielvl1(5, 5, "/recursos/enemigosSprites/ZombieLVL1.png", this, 100, HPEnemy_2));
+            enemies.add(new Zombielvl2(3, 3, "/recursos/enemigosSprites/ZombieLVL2.png", this, 100, HPEnemy_3));
+        }else if(level == 3){
+            enemies.add(new Zombielvl2(2, 6, "/recursos/enemigosSprites/ZombieLVL2.png", this, 100, HPEnemy_1));
+            enemies.add(new Zombielvl2(5, 5, "/recursos/enemigosSprites/ZombieLVL2.png", this, 100, HPEnemy_2));
+            enemies.add(new Zombielvl3(3, 3, "/recursos/enemigosSprites/ZombieLVL3.png", this, 100, HPEnemy_3));
+        }else if(level == 4){
             System.exit(0);
         }
-        if(Nivel > 1){
-            botonNivel.setEnabled(false);
+        if(level > 1){
+            LevelButton.setEnabled(false);
             drawBoard();
         }
-        barra1.setBounds(525, 100, 150, 10);
-        barra1.setValue(100);
-        barra1.setBackground(Color.RED);
-        barra1.setForeground(Color.GREEN);
-        add(barra1);
+        HPEnemy_1.setBounds(525, 100, 150, 10);
+        HPEnemy_1.setValue(100);
+        HPEnemy_1.setBackground(Color.RED);
+        HPEnemy_1.setForeground(Color.GREEN);
+        add(HPEnemy_1);
 
-        barra2.setBounds(525, 140, 150, 10);
-        barra2.setValue(100);
-        barra2.setBackground(Color.RED);
-        barra2.setForeground(Color.GREEN);
-        add(barra2);
+        HPEnemy_2.setBounds(525, 140, 150, 10);
+        HPEnemy_2.setValue(100);
+        HPEnemy_2.setBackground(Color.RED);
+        HPEnemy_2.setForeground(Color.GREEN);
+        add(HPEnemy_2);
 
-        barra3.setBounds(525, 180, 150, 10);
-        barra3.setValue(100);
-        barra3.setBackground(Color.RED);
-        barra3.setForeground(Color.GREEN);
-        add(barra3);
+        HPEnemy_3.setBounds(525, 180, 150, 10);
+        HPEnemy_3.setValue(100);
+        HPEnemy_3.setBackground(Color.RED);
+        HPEnemy_3.setForeground(Color.GREEN);
+        add(HPEnemy_3);
     }
 
     /*
@@ -111,37 +109,37 @@ public class Grafico extends JComponent implements ActionListener{
         coloca el fondo y el tamanho de la ventana
     */
     public Grafico(){
-        botonNivel = new JButton("Siguiente");
-        botonNivel.setBounds(526, 460, 150, 50);
-        botonNivel.addActionListener(this);
-        botonNivel.setEnabled(false);
-        add(botonNivel);
+        LevelButton = new JButton("Siguiente");
+        LevelButton.setBounds(526, 460, 150, 50);
+        LevelButton.addActionListener(this);
+        LevelButton.setEnabled(false);
+        add(LevelButton);
 
-        botonAtacar = new JButton("Atacar");
-        botonAtacar.setBounds(596, 20, 85, 30);
-        botonAtacar.addActionListener(this);
-        add(botonAtacar);
+        AttackButton = new JButton("Atacar");
+        AttackButton.setBounds(596, 20, 85, 30);
+        AttackButton.addActionListener(this);
+        add(AttackButton);
 
-        mensaje = new JLabel("Zombie 1");
-        mensaje.setBounds(526, 65, 150, 50);
-        add(mensaje);
-        mensaje2 = new JLabel("Zombie 2");
-        mensaje2.setBounds(526, 105, 150, 50);
-        add(mensaje2);
-        mensaje3 = new JLabel("Zombie 3");
-        mensaje3.setBounds(526, 145, 150, 50);
-        add(mensaje3);
+        Message1 = new JLabel("Zombie 1");
+        Message1.setBounds(526, 65, 150, 50);
+        add(Message1);
+        Message2 = new JLabel("Zombie 2");
+        Message2.setBounds(526, 105, 150, 50);
+        add(Message2);
+        Message3 = new JLabel("Zombie 3");
+        Message3.setBounds(526, 145, 150, 50);
+        add(Message3);
 
-        Inventario = new ArrayList<Objetos>();
-        VD = new ArrayList<Integer>();
+        Inventory = new ArrayList<Objetos>();
+        AttackValues = new ArrayList<Integer>();
         BoardGrid = new Integer[rows][cols];
         Static_Shapes = new ArrayList<DrawingShape>();
         User_Graphics = new ArrayList<DrawingShape>();
         Users = new ArrayList<Piece>();
-        enemigos = new ArrayList<Piece>();
-        Obstaculo = new ArrayList<Piedra>();
-        ObjetosLista = new ArrayList<Objetos>();
-        Muertes = new ArrayList<Objetos>();
+        enemies = new ArrayList<Piece>();
+        Obstacule = new ArrayList<Piedra>();
+        ObjectList = new ArrayList<Objetos>();
+        DeadUser = new ArrayList<Objetos>();
 
         initGrid();
 
@@ -166,13 +164,13 @@ public class Grafico extends JComponent implements ActionListener{
         User_Graphics.clear();
         Static_Shapes.clear();
 
-        if (enemigos.isEmpty()){
-            if(Nivel == 3){
-                mensaje = new JLabel("Ya ganaste");
-                mensaje.setBounds(526, 300, 150, 50);
-                add(mensaje);
+        if (enemies.isEmpty()){
+            if(level == 3){
+                Message1 = new JLabel("Ya ganaste");
+                Message1.setBounds(526, 300, 150, 50);
+                add(Message1);
             }
-            botonNivel.setEnabled(true);
+            LevelButton.setEnabled(true);
         }
         //Cargar la imagen del tablero
         Image board = loadImage(board_file_path);
@@ -184,8 +182,8 @@ public class Grafico extends JComponent implements ActionListener{
             Square_Width*3, Piedra1.getWidth(null), Piedra1.getHeight(null))));
 
         //Funcion moverZombie
-        if(turnCounter%2 != 0 && enemigos.isEmpty() == false){
-            int num = (int)(Math.random() * Selector_Azar);
+        if((turnCounter%3 == 0 && turnCounter != 0) && !enemies.isEmpty()){
+            int num = (int)(Math.random() * turnSelector);
             MoverZombie(num);
         }
         /*
@@ -193,7 +191,7 @@ public class Grafico extends JComponent implements ActionListener{
         seleccionado
         */
         if(Active_Piece != null){
-            if(!enemigos.contains(Active_Piece)){
+            if(!enemies.contains(Active_Piece)){
                 //active_Square: Cuadro rojo
                 Image active_Square = loadImage(active_square_file_path);
                 //casillaDisparo: Cuando se selecciona atacar, dibuja cuadros de ataque
@@ -202,21 +200,21 @@ public class Grafico extends JComponent implements ActionListener{
                 Static_Shapes.add(new DrawingImage(active_Square, new Rectangle2D.Double(Square_Width*Active_Piece.x,
                     Square_Width*Active_Piece.y, active_Square.getWidth(null), active_Square.getHeight(null))));
 
-                if(Ataque){
+                if(Attack){
                     //Llama constructos clase Casilla
                     Casillas valor = new Casillas(Active_Piece.x, Active_Piece.y);
-                    VD = valor.Valores;
-                    Ataque = false;
+                    AttackValues = valor.Valores;
+                    Attack = false;
 
                     //Carga las imagenes de cuadro de ataque
-                    for(int i=0 ; i<VD.size() ; i+=2){
-                        Static_Shapes.add(new DrawingImage(casillaDisparo, new Rectangle2D.Double(Square_Width*VD.get(i),
-                            Square_Width*VD.get(i+1), active_Square.getWidth(null), active_Square.getHeight(null))));
+                    for(int i=0 ; i<AttackValues.size() ; i+=2){
+                        Static_Shapes.add(new DrawingImage(casillaDisparo, new Rectangle2D.Double(Square_Width*AttackValues.get(i),
+                            Square_Width*AttackValues.get(i+1), active_Square.getWidth(null), active_Square.getHeight(null))));
                     }
                 }
             }
         }else{
-            botonAtacar.setEnabled(false);
+            AttackButton.setEnabled(false);
         }
         for(int i=0 ; i<Users.size() ; i++){
             int COL = Users.get(i).x;
@@ -228,41 +226,41 @@ public class Grafico extends JComponent implements ActionListener{
                 Square_Width*ROW, piece.getWidth(null), piece.getHeight(null))));
         }
 
-        for(int i=0 ; i<enemigos.size() ; i++){
-            int COL = enemigos.get(i).x;
-            int ROW = enemigos.get(i).y;
+        for(int i=0 ; i<enemies.size() ; i++){
+            int COL = enemies.get(i).x;
+            int ROW = enemies.get(i).y;
 
             //Carga las imagenes de cada enemigos
-            Image piece = loadImage(enemigos.get(i).file_path);
+            Image piece = loadImage(enemies.get(i).file_path);
             User_Graphics.add(new DrawingImage(piece, new Rectangle2D.Double(Square_Width*COL, 
                 Square_Width*ROW, piece.getWidth(null), piece.getHeight(null))));
         }
-        if(!ObjetosLista.isEmpty()){
+        if(!ObjectList.isEmpty()){
             //Carga las imagenes de los obj. dropeados
             Image Objeto = loadImage("/recursos/estaticoSprites/Objeto1.png");
-            for(int i=0 ; i<ObjetosLista.size() ; i++){
-                Static_Shapes.add(new DrawingImage(Objeto, new Rectangle2D.Double(Square_Width*ObjetosLista.get(i).x,
-                Square_Width*ObjetosLista.get(i).y, Objeto.getWidth(null), Objeto.getHeight(null))));
+            for(int i=0 ; i<ObjectList.size() ; i++){
+                Static_Shapes.add(new DrawingImage(Objeto, new Rectangle2D.Double(Square_Width*ObjectList.get(i).x,
+                Square_Width*ObjectList.get(i).y, Objeto.getWidth(null), Objeto.getHeight(null))));
             }
         }
-        if(!Muertes.isEmpty()){
+        if(!DeadUser.isEmpty()){
             //Carga las imagenes de las lapidas
             Image lapida = loadImage("/recursos/estaticoSprites/Lapida.png");
-            for(int i=0 ; i<Muertes.size() ; i++){
-                Static_Shapes.add(new DrawingImage(lapida, new Rectangle2D.Double(Square_Width*Muertes.get(i).x,
-                Square_Width*Muertes.get(i).y, lapida.getWidth(null), lapida.getHeight(null))));
+            for(int i=0 ; i<DeadUser.size() ; i++){
+                Static_Shapes.add(new DrawingImage(lapida, new Rectangle2D.Double(Square_Width*DeadUser.get(i).x,
+                Square_Width*DeadUser.get(i).y, lapida.getWidth(null), lapida.getHeight(null))));
             }
         }
-        if(!Inventario.isEmpty()){
+        if(!Inventory.isEmpty()){
             int NumTemp = 0, rest = 0;
             Image objObtenido = loadImage("/recursos/estaticoSprites/Objeto1.png");
-            for(int i=0 ; i<Inventario.size() ; i++){
+            for(int i=0 ; i<Inventory.size() ; i++){
                 if(NumTemp != 0 && NumTemp%5 == 0){
                     NumTemp ++;
                     rest = i-1;
                 }
-                Static_Shapes.add(new DrawingImage(objObtenido, new Rectangle2D.Double(Inventario.get(i-rest).x,
-                Inventario.get(NumTemp).y, 29, 37)));
+                Static_Shapes.add(new DrawingImage(objObtenido, new Rectangle2D.Double(Inventory.get(i-rest).x,
+                Inventory.get(NumTemp).y, 29, 37)));
             }
         }
         //Llama paintComponent
@@ -275,14 +273,14 @@ public class Grafico extends JComponent implements ActionListener{
     */
     private void MoverZombie(int num){
         turnCounter ++;
-        for(int i=0 ; i<enemigos.size() ; i++){
-            Active_Piece = enemigos.get(i);
-            if(Active_Piece.piezaAdyacentes(Active_Piece.x , Active_Piece.y)){
+        for(int i=0 ; i<enemies.size() ; i++){
+            Active_Piece = enemies.get(i);
+            if(Active_Piece.closePiece(Active_Piece.x , Active_Piece.y)){
                 Active_Piece.MoveEnemy();
 
             }else{
                 Users.remove(getPiece(Piece.x_User, Piece.y_User));
-                Muertes.add(new Objetos(Piece.x_User, Piece.y_User, "/recursos/estaticoSprites/Lapida.png"));
+                DeadUser.add(new Objetos(Piece.x_User, Piece.y_User, "/recursos/estaticoSprites/Lapida.png"));
             }
         }
         drawBoard();
@@ -305,7 +303,7 @@ public class Grafico extends JComponent implements ActionListener{
                 return p;
             }
         }
-        for(Piece p : enemigos){
+        for(Piece p : enemies){
             if(p.x == x && p.y == y){
                 return p;
             }
@@ -315,7 +313,7 @@ public class Grafico extends JComponent implements ActionListener{
 
     //Metodo para obtener un obstaculo, devuelve tipo Piedra
     public Piedra getObstaculo(int x, int y){
-        for(Piedra a : Obstaculo){
+        for(Piedra a : Obstacule){
             if(a.x == x && a.y == y){
                 return a;
             }
@@ -324,7 +322,7 @@ public class Grafico extends JComponent implements ActionListener{
     }
 
     public Objetos getObjetos(int x, int y){
-        for(Objetos obj : ObjetosLista){
+        for(Objetos obj : ObjectList){
             if(obj.x == x && obj.y == y){
                 return obj;
             }
@@ -335,19 +333,19 @@ public class Grafico extends JComponent implements ActionListener{
     @Override
     //Activar funcionamiento a los botones
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == botonNivel){
+        if (e.getSource() == LevelButton){
             Static_Shapes.clear();
             User_Graphics.clear();
             Users.clear();
-            enemigos.clear();
-            Obstaculo.clear();
-            Selector_Azar = 3;
-            Nivel++;
+            enemies.clear();
+            Obstacule.clear();
+            turnSelector = 3;
+            level++;
             initGrid();
         }
-        if (e.getSource() == botonAtacar){
-            botonAtacar.setEnabled(false);
-            Ataque = true;
+        if (e.getSource() == AttackButton){
+            AttackButton.setEnabled(false);
+            Attack = true;
             Move = false;
             drawBoard();
         }
@@ -369,13 +367,13 @@ public class Grafico extends JComponent implements ActionListener{
             Piedra clicked_obstacule = getObstaculo(Clicked_Row, Clicked_Column);
             //Obtiene el personaje/enemigo/obtaculo con el metodo getPiece/getObstacule
 
-            if(false == enemigos.contains(clicked_piece) && clicked_piece != null){
+            if(false == enemies.contains(clicked_piece) && clicked_piece != null){
                 //Permite seleccionar el personaje y guardarlo en Active_Piece
 
                 Active_Piece = clicked_piece;
-                Usuario_Seleccionado = true;
-                botonAtacar.setEnabled(true);
-            }else if(Usuario_Seleccionado == true && Clicked_Column < 8){
+                Selected_User = true;
+                AttackButton.setEnabled(true);
+            }else if(Selected_User == true && Clicked_Column < 8){
                 if((clicked_obstacule == null) && Move){
                     if(Active_Piece.canMove(Clicked_Row, Clicked_Column) && Users.contains(clicked_piece) == false){
                         
@@ -384,16 +382,14 @@ public class Grafico extends JComponent implements ActionListener{
                         Active_Piece.y = Clicked_Row;
 
                         turnCounter ++;
-                        Usuario_Seleccionado = false;
+                        Selected_User = false;
 
                         Objetos objetoDropeado = getObjetos(Clicked_Column, Clicked_Row);
                         if(objetoDropeado != null){
-                            //Hay que cambiar los valores de posicion del inventario
-                            //(530-d_X)/29 = Formula para conocer la posicion en el inventario
 
-                            Active_Piece.AumentarDanho();
-                            Inventario.add(new Objetos(530+(Inventario.size()*29), 265+(((int)(Inventario.size()/5))*37), "/recursos/estaticoSprites/Objeto1.png"));
-                            ObjetosLista.remove(objetoDropeado);
+                            Active_Piece.IncreaseDamage();
+                            Inventory.add(new Objetos(530+(Inventory.size()*29), 265+(((int)(Inventory.size()/4))*37), "/recursos/estaticoSprites/Objeto1.png"));
+                            ObjectList.remove(objetoDropeado);
                         }
                         Active_Piece = null;
                     }
@@ -401,21 +397,21 @@ public class Grafico extends JComponent implements ActionListener{
 
                     //Permite seleccionar casillas para atacar
                     Move = true;
-                    if(Active_Piece.Atacar(Active_Piece.x, Active_Piece.y, Clicked_Column, Clicked_Row)){
-                        if (enemigos.contains(clicked_piece)){
-                            clicked_piece.recibirDano();
+                    if(Active_Piece.UserAttack(Active_Piece.x, Active_Piece.y, Clicked_Column, Clicked_Row)){
+                        if (enemies.contains(clicked_piece)){
+                            clicked_piece.ReceiveDamage(clicked_piece);
                             clicked_piece.SaludBarra.setValue(clicked_piece.Salud);
                             if(clicked_piece.Salud <= 0){
-                                enemigos.remove(clicked_piece);
-                                Selector_Azar--;
-                                ObjetosLista.add(new Objetos(Clicked_Column, Clicked_Row, 
+                                enemies.remove(clicked_piece);
+                                turnSelector--;
+                                ObjectList.add(new Objetos(Clicked_Column, Clicked_Row, 
                                     "/recursos/estaticoSprites/Objeto1.png"));
                             }
                             turnCounter ++;
                         }
                     }
                     Active_Piece = null;
-                    Usuario_Seleccionado = false;
+                    Selected_User = false;
                 }
             }
             drawBoard();

@@ -1,7 +1,12 @@
 package personajes.enemigos;
 
-public class Zombielvl2 {
+import javax.swing.JProgressBar;
+import personajes.principales.Piece;
+import pruebas.Grafico;
+
+public class Zombielvl2 extends Piece{
     
-    public void movimiento(){}
-    public void ataque(){}
+    public Zombielvl2(int x, int y, String file_path, Grafico board, int Salud, JProgressBar SaludBarra) {
+        super(x, y, file_path, board, Salud, SaludBarra);
+    }
 }
