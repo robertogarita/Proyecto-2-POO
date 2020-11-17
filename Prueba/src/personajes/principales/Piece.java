@@ -125,9 +125,13 @@ public class Piece {
     }
 
     //Permite a los usuarios atacar en las casillas marcadas
-    public boolean UserAttack(int xPosicion, int yPosicion, int xLlegada, int yLlegada){
-        if((xPosicion-2 <= xLlegada && xLlegada <= xPosicion+2) && 
-            (yPosicion-2 <= yLlegada && yLlegada <= yPosicion+2)){
+    public boolean UserAttack(int xPosicion, int yPosicion, int xLlegada, int yLlegada, boolean ARS){
+        int SpaceExtended = 2;
+        if(ARS){
+            SpaceExtended = 3;
+        }
+        if((xPosicion-SpaceExtended <= xLlegada && xLlegada <= xPosicion+SpaceExtended) && 
+            (yPosicion-SpaceExtended <= yLlegada && yLlegada <= yPosicion+SpaceExtended)){
                 return true;
             }else{
                 return false;
